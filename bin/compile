@@ -43,11 +43,11 @@ if [ ! -d $CACHE_DIR/groff ]; then
   ./configure --prefix=$CACHE_DIR/groff
   make PROCESSEDEXAMPLEFILES=""
   make PROCESSEDEXAMPLEFILES="" install
-
-  echo "-----> soelim"
-  ls $CACHE_DIR/groff
-  export PATH=$PATH:$CACHE_DIR/groff/bin
 fi
+
+echo "-----> soelim"
+ls $CACHE_DIR/groff
+export PATH=$PATH:$CACHE_DIR/groff/bin
 
 if [ ! -d $CACHE_DIR/db4 ]; then
   echo "-----> Installing BerkeleyDB"
@@ -59,17 +59,17 @@ if [ ! -d $CACHE_DIR/db4 ]; then
   ../dist/configure --prefix=$CACHE_DIR/db4
   make
   make install
-
-  echo "-----> Changing library paths"
-  export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$CACHE_DIR/db4/lib:/usr/local/ssl/lib"
-  export LDFLAGS="-L/usr/local/lib -L$CACHE_DIR/db4/lib -L/usr/local/ssl/lib"
-  export CPPFLAGS="-I/usr/local/include -I$CACHE_DIR/db4/include -I/usr/local/ssl/include"
-
-  echo $LD_LIBRARY_PATH
-  echo $LDFLAGS
-  echo $CPPFLAGS
-  ls $CACHE_DIR/db4/lib
 fi
+
+echo "-----> Changing library paths"
+export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$CACHE_DIR/db4/lib:/usr/local/ssl/lib"
+export LDFLAGS="-L/usr/local/lib -L$CACHE_DIR/db4/lib -L/usr/local/ssl/lib"
+export CPPFLAGS="-I/usr/local/include -I$CACHE_DIR/db4/include -I/usr/local/ssl/include"
+
+echo $LD_LIBRARY_PATH
+echo $LDFLAGS
+echo $CPPFLAGS
+ls $CACHE_DIR/db4/lib
 
 if [ ! -d $CACHE_DIR/openldap ]; then
   echo "-----> Fetching and installing openldap"
