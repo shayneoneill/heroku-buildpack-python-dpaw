@@ -45,7 +45,7 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   make PROCESSEDEXAMPLEFILES="" install
 
   echo "-----> soelim"
-  which soelim
+  soelim
 
   echo "-----> Installing BerkeleyDB"
   cd $BUILD_DIR
