@@ -36,9 +36,9 @@ cd $BUILD_DIR
 if [ ! -d $CACHE_DIR/openldap ]; then
   cd $BUILD_DIR
   echo "-----> First BerkeleyDB"
-  curl -O http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz
-  tar -zxvf db-4.8.30.NC.tar.gz
-  cd db-4.8.30.NC
+  curl -O http://download.oracle.com/berkeley-db/db-4.8.24.NC.tar.gz
+  tar -zxvf db-4.8.24.NC.tar.gz
+  cd db-4.8.24.NC
   cd build_unix
   ../dist/configure --prefix=$CACHE_DIR/db4
   make
