@@ -35,7 +35,17 @@ cd $BUILD_DIR
 # Install python-ldap
 if [ ! -d $CACHE_DIR/openldap ]; then
   cd $BUILD_DIR
-  echo "-----> First BerkeleyDB"
+
+  echo "-----> Installing Groff"
+  curl -O ftp://ftp.gnu.org/gnu/groff/groff-1.21.tar.gz
+  tar -zxvf groff-1.21.tar.gz
+  cd groff-1.21
+  ./configure --prefix=/usr/local &&
+  make PROCESSEDEXAMPLEFILES="" &&
+  make PROCESSEDEXAMPLEFILES="" install &&
+
+  echo "-----> Installing BerkeleyDB"
+  cd $BUILD_DIR
   curl -O http://download.oracle.com/berkeley-db/db-4.8.24.NC.tar.gz
   tar -zxvf db-4.8.24.NC.tar.gz
   cd db-4.8.24.NC
@@ -52,10 +62,10 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   echo $LD_LIBRARY_PATH
   echo $LDFLAGS
   echo $CPPFLAGS
-
   ls $CACHE_DIR/db4/lib
 
   echo "-----> Fetching and installing openldap"
+  cd $BUILD_DIR
   curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.33.tgz >/dev/null 2>&1
   echo "-----> Extracting ..."
   tar -xvf openldap-2.4.33.tgz
