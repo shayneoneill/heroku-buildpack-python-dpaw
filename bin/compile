@@ -42,7 +42,7 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   cd groff-1.21
   ./configure --prefix=$CACHE_DIR/groff &&
   make PROCESSEDEXAMPLEFILES="" &&
-  make PROCESSEDEXAMPLEFILES="" install
+  make PROCESSEDEXAMPLEFILES="" install || true
 
   which soelim
   exit
