@@ -15,7 +15,7 @@ mkdir -p $BUILD_DIR $CACHE_DIR
 
 NAME=$($BIN_DIR/detect $BUILD_DIR)
 PIP_DOWNLOAD_CACHE=${PIP_DOWNLOAD_CACHE:-$CACHE_DIR/pip_downloads}
-VIRTUALENV_DIRS="bin include lib .python-ldap"
+VIRTUALENV_DIRS="bin include lib"
 VENDORED_MEMCACHED="http://cl.ly/0a191R3K160t1w1P0N25/vendor-libmemcached.tar.gz"
 
 unset GIT_DIR
@@ -46,12 +46,9 @@ if [ -f "lib/python2.7" ]; then
   exit 1;
 fi
 
-ls -a $CACHE_DIR
-
 # Copy artifacts out of cache if exists.
 mkdir -p $CACHE_DIR
 for dir in $VIRTUALENV_DIRS; do
-  echo $dir
   cp -R $CACHE_DIR/$dir . &> /dev/null || true
 done
 
@@ -60,6 +57,10 @@ done
 ##############################################################
 
 cd $BUILD_DIR
+
+if [ -d $CACHE_DIR/.python-ldap ]; then
+  cp -R $CACHE_DIR/.python-ldap .
+fi
 mkdir -p .python-ldap
 
 # Install python-ldap
