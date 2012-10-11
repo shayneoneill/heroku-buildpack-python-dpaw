@@ -86,6 +86,9 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   echo "openldap installed" | indent
 fi
 
+export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$CACHE_DIR/openldap/lib:/usr/local/ssl/lib"
+export LDFLAGS="-L/usr/local/lib -L$CACHE_DIR/openldap/lib -L/usr/local/ssl/lib"
+export CPPFLAGS="-I/usr/local/include -I$CACHE_DIR/openldap/include -I/usr/local/ssl/include"
 cd $BUILD_DIR
 
 # # Install Proj.4
