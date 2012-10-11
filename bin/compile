@@ -83,8 +83,6 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   make
   #make test
   make install
-  cd $BUILD_DIR
-  rm openldap-2.4.33.tgz
   echo "openldap installed" | indent
 fi
 
