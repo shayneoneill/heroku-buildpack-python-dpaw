@@ -38,8 +38,8 @@ if [ ! -d $CACHE_DIR/gdal ]; then
   echo "-----> Fetching and installing python-ldap"
   curl -O http://pypi.python.org/packages/source/p/python-ldap/python-ldap-2.4.10.tar.gz >/dev/null 2>&1
   echo "-----> Installing ..."
-  tar xzvf python-ldap-2.4.10.tar.gz >/dev/null 2>&1
-  mv python-ldap $CACHE_DIR/python-ldap
+  tar -xzvf python-ldap-2.4.10.tar.gz >/dev/null 2>&1
+  mv python-ldap-2.4.10 $CACHE_DIR/python-ldap
   rm python-ldap-2.4.10.tar.gz
   echo "python-ldap installed" | indent
 fi
