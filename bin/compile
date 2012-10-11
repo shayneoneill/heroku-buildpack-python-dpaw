@@ -40,6 +40,7 @@ if [ -d $CACHE_DIR/.python-ldap ]; then
   cp -R $CACHE_DIR/.python-ldap .
 fi
 mkdir -p .python-ldap
+mkdir -p $CACHE_DIR/.python-ldap
 
 # Install python-ldap
 if [ ! -d $BUILD_DIR/.python-ldap/groff ]; then
@@ -51,20 +52,24 @@ if [ ! -d $BUILD_DIR/.python-ldap/groff ]; then
   make PROCESSEDEXAMPLEFILES=""
   make PROCESSEDEXAMPLEFILES="" install
   cd $BUILD_DIR
+  cp -R .python-ldap/groff $CACHE_DIR/.python-ldap
 fi
 
 echo "-----> Adding soelim to path"
 export PATH=$PATH:$BUILD_DIR/.python-ldap/groff/bin
 
-echo "-----> Installing BerkeleyDB"
-curl -O http://download.oracle.com/berkeley-db/db-4.8.24.NC.tar.gz
-tar -zxvf db-4.8.24.NC.tar.gz
-cd db-4.8.24.NC
-cd build_unix
-../dist/configure --prefix=$BUILD_DIR/.python-ldap/db4
-make
-make install
-cd $BUILD_DIR
+if [ ! -d $BUILD_DIR/.python-ldap/db4 ]; then
+  echo "-----> Installing BerkeleyDB"
+  curl -O http://download.oracle.com/berkeley-db/db-4.8.24.NC.tar.gz
+  tar -zxvf db-4.8.24.NC.tar.gz
+  cd db-4.8.24.NC
+  cd build_unix
+  ../dist/configure --prefix=$BUILD_DIR/.python-ldap/db4
+  make
+  make install
+  cd $BUILD_DIR
+  cp -R .python-ldap/db4 $CACHE_DIR/.python-ldap
+fi
 
 echo "-----> Changing library paths"
 export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$BUILD_DIR/.python-ldap/db4/lib:/usr/local/ssl/lib"
@@ -91,6 +96,7 @@ if [ ! -d $BUILD_DIR/.python-ldap/openldap ]; then
   make install
   echo "openldap installed" | indent
   cd $BUILD_DIR
+  cp -R .python-ldap/openldap $CACHE_DIR/.python-ldap
 fi
 
 export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$BUILD_DIR/.python-ldap//openldap/lib:/usr/local/ssl/lib"
