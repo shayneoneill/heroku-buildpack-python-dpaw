@@ -99,10 +99,6 @@ if [ ! -d $BUILD_DIR/.python-ldap/openldap ]; then
   cp -R .python-ldap/openldap $CACHE_DIR/.python-ldap
 fi
 
-export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$BUILD_DIR/.python-ldap//openldap/lib:/usr/local/ssl/lib"
-export LDFLAGS="-L/usr/local/lib -L$BUILD_DIR/.python-ldap/openldap/lib -L/usr/local/ssl/lib"
-export CPPFLAGS="-I/usr/local/include -I$BUILD_DIR/.python-ldap//include -I/usr/local/ssl/include"
-
 ##############################################################
 # / python ldap
 ##############################################################
@@ -162,6 +158,10 @@ source bin/activate
 if (grep -Fiq "hg+" requirements.txt) then
   pip install --use-mirrors mercurial | indent
 fi
+
+export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$BUILD_DIR/.python-ldap/openldap/lib:/usr/local/ssl/lib"
+export LDFLAGS="-L/usr/local/lib -L$BUILD_DIR/.python-ldap/openldap/lib -L/usr/local/ssl/lib"
+export CPPFLAGS="-I/usr/local/include -I$BUILD_DIR/.python-ldap/openldap/include -I/usr/local/ssl/include"
 
 # Install dependencies.
 echo "-----> Installing dependencies using pip version $(pip --version | awk '{print $2}')"
