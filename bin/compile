@@ -37,12 +37,16 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   cd $BUILD_DIR
   echo "-----> Fetching and installing openldap"
   curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.9.tgz >/dev/null 2>&1
-  echo "-----> Installing ..."
+  echo "-----> Extracting ..."
   tar -xzvf openldap-2.4.9.gz >/dev/null 2>&1
+  echo "-----> Moving ..."
   mv openldap-2.4.9 $CACHE_DIR/openldap
   rm openldap-2.4.9.tar.gz
+  echo "-----> Change directories ..."
   cd $CACHE_DIR/openldap
+  echo "-----> Configuring ..."
   ./configure
+  echo "-----> Installing ..."
   make && make install
   echo "openldap installed" | indent
 fi
