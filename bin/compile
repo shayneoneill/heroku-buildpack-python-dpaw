@@ -38,7 +38,7 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   echo "-----> Fetching and installing openldap"
   curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.9.tgz >/dev/null 2>&1
   echo "-----> Extracting ..."
-  tar -xzvf openldap-2.4.9.tgz >/dev/null 2>&1
+  tar -xvf openldap-2.4.9.tgz
   echo "-----> Moving ..."
   mv openldap-2.4.9 $CACHE_DIR/openldap
   rm openldap-2.4.9.tgz
