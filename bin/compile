@@ -45,12 +45,9 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   make install
 
   echo "-----> Changing library paths"
-  export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$CACHE_DIR/db4/lib:/usr/local/ssl/lib"
-  export LDFLAGS="-L/usr/local/lib -L$CACHE_DIR/db4/lib -L/usr/local/ssl/lib"
-  export CPPFLAGS="-I/usr/local/include -I$CACHE_DIR/db4/include -I/usr/local/ssl/include"
-  ls $CACHE_DIR/db4
-
-  exit
+  LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$CACHE_DIR/db4/lib:/usr/local/ssl/lib"
+  LDFLAGS="-L/usr/local/lib -L$CACHE_DIR/db4/lib -L/usr/local/ssl/lib"
+  CPPFLAGS="-I/usr/local/include -I$CACHE_DIR/db4/include -I/usr/local/ssl/include"
 
   echo "-----> Fetching and installing openldap"
   curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.9.tgz >/dev/null 2>&1
