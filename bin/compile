@@ -85,7 +85,7 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   echo "-----> Installing ..."
   make depend
   make
-  make test
+  #make test
   make install
   echo "openldap installed" | indent
 fi
