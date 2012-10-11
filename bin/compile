@@ -43,6 +43,8 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   ../dist/configure --prefix=$CACHE_DIR/db4
   make
   make install
+  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CACHE_DIR/db4
+
   echo "-----> Fetching and installing openldap"
   curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.9.tgz >/dev/null 2>&1
   echo "-----> Extracting ..."
