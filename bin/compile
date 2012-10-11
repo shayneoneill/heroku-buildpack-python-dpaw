@@ -86,6 +86,8 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   echo "openldap installed" | indent
 fi
 
+cd $BUILD_DIR
+
 # # Install Proj.4
 # if [ ! -d $CACHE_DIR/gdal ]; then
 #   cd $BUILD_DIR
