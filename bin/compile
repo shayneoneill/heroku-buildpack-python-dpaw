@@ -45,7 +45,8 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   make PROCESSEDEXAMPLEFILES="" install
 
   echo "-----> soelim"
-  soelim
+  ls $CACHE_DIR/groff
+  export PATH=$PATH:$CACHE_DIR/groff/bin
 
   echo "-----> Installing BerkeleyDB"
   cd $BUILD_DIR
