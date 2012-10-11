@@ -161,7 +161,9 @@ mkdir -p .heroku
 
 # Create set-aside .geodjango folder and copy compiled files
 mkdir -p .python-ldap
-cp -R $CACHE_DIR/python-ldap .python-ldap
+cp -R $CACHE_DIR/db4 .python-ldap
+cp -R $CACHE_DIR/groff .python-ldap
+cp -R $CACHE_DIR/openldap .python-ldap
 # cp -R $CACHE_DIR/proj4 .python-ldap
 # cp -R $CACHE_DIR/gdal .python-ldap
 

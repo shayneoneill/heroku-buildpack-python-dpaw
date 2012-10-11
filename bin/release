@@ -10,8 +10,8 @@ cat <<EOF
 config_vars:
   PATH: bin:/usr/local/bin:/usr/bin:/bin
   PYTHONUNBUFFERED: true
-  LIBRARY_PATH: .heroku/vendor/lib:/app/.geodjango/proj4/lib:/app/.geodjango/gdal/lib:/app/.geodjango/geos/lib
-  LD_LIBRARY_PATH: .heroku/vendor/lib:/app/.geodjango/proj4/lib:/app/.geodjango/gdal/lib:/app/.geodjango/geos/lib
+  LIBRARY_PATH: .heroku/vendor/lib:/app/.python-ldap/proj4/lib:/app/.python-ldap/gdal/lib:/app/.python-ldap/geos/lib
+  LD_LIBRARY_PATH: .heroku/vendor/lib:/app/.python-ldap/proj4/lib:/app/.python-ldap/gdal/lib:/app/.python-ldap/geos/lib
   LANG: en_US.UTF-8
   PYTHONPATH: /app
 EOF
