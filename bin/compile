@@ -54,7 +54,6 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   echo $CPPFLAGS
 
   ls $CACHE_DIR/db4/lib
-  exit
 
   echo "-----> Fetching and installing openldap"
   curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.9.tgz >/dev/null 2>&1
