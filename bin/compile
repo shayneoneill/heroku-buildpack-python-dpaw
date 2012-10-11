@@ -31,9 +31,8 @@ function virtualenv (){
 }
 
 # Install python-ldap
-if [ ! -d $CACHE_DIR/groff ]; then
-  cd $BUILD_DIR
-
+cd $BUILD_DIR
+if [ ! -d .python-ldap/groff ]; then
   echo "-----> Installing Groff"
   curl -O ftp://ftp.gnu.org/gnu/groff/groff-1.21.tar.gz
   tar -zxvf groff-1.21.tar.gz
@@ -47,8 +46,8 @@ echo "-----> soelim"
 ls $CACHE_DIR/groff
 export PATH=$PATH:$CACHE_DIR/groff/bin
 
-echo "-----> Installing BerkeleyDB"
 cd $BUILD_DIR
+echo "-----> Installing BerkeleyDB"
 curl -O http://download.oracle.com/berkeley-db/db-4.8.24.NC.tar.gz
 tar -zxvf db-4.8.24.NC.tar.gz
 cd db-4.8.24.NC
@@ -67,9 +66,9 @@ echo $LDFLAGS
 echo $CPPFLAGS
 ls $CACHE_DIR/db4/lib
 
+cd $BUILD_DIR
 if [ ! -d $CACHE_DIR/openldap ]; then
   echo "-----> Fetching and installing openldap"
-  cd $BUILD_DIR
   curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.33.tgz >/dev/null 2>&1
   echo "-----> Extracting ..."
   tar -xvf openldap-2.4.33.tgz
