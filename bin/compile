@@ -15,7 +15,7 @@ mkdir -p $BUILD_DIR $CACHE_DIR
 
 NAME=$($BIN_DIR/detect $BUILD_DIR)
 PIP_DOWNLOAD_CACHE=${PIP_DOWNLOAD_CACHE:-$CACHE_DIR/pip_downloads}
-VIRTUALENV_DIRS="bin include lib"
+VIRTUALENV_DIRS="bin include lib .python-ldap"
 VENDORED_MEMCACHED="http://cl.ly/0a191R3K160t1w1P0N25/vendor-libmemcached.tar.gz"
 
 unset GIT_DIR
@@ -30,44 +30,47 @@ function virtualenv (){
   python "$ROOT_DIR/src/virtualenv-1.7/virtualenv.py" "$@"
 }
 
-# Install python-ldap
+##############################################################
+# python ldap
+##############################################################
+
 cd $BUILD_DIR
-if [ ! -d .python-ldap/groff ]; then
+mkdir -p .python-ldap
+
+# Install python-ldap
+if [ ! -d $BUILD_DIR/.python-ldap/groff ]; then
   echo "-----> Installing Groff"
   curl -O ftp://ftp.gnu.org/gnu/groff/groff-1.21.tar.gz
   tar -zxvf groff-1.21.tar.gz
   cd groff-1.21
-  ./configure --prefix=$CACHE_DIR/groff
+  ./configure --prefix=.python-ldap/groff
   make PROCESSEDEXAMPLEFILES=""
   make PROCESSEDEXAMPLEFILES="" install
+  cd $BUILD_DIR
 fi
 
-echo "-----> soelim"
-ls $CACHE_DIR/groff
-export PATH=$PATH:$CACHE_DIR/groff/bin
+echo "-----> Adding soelim to path"
+export PATH=$PATH:$BUILD_DIR/.python-ldap/groff/bin
 
-cd $BUILD_DIR
 echo "-----> Installing BerkeleyDB"
 curl -O http://download.oracle.com/berkeley-db/db-4.8.24.NC.tar.gz
 tar -zxvf db-4.8.24.NC.tar.gz
 cd db-4.8.24.NC
 cd build_unix
-../dist/configure --prefix=$CACHE_DIR/db4
+../dist/configure --prefix=$BUILD_DIR/.python-ldap/db4
 make
 make install
+cd $BUILD_DIR
 
 echo "-----> Changing library paths"
-export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$CACHE_DIR/db4/lib:/usr/local/ssl/lib"
-export LDFLAGS="-L/usr/local/lib -L$CACHE_DIR/db4/lib -L/usr/local/ssl/lib"
-export CPPFLAGS="-I/usr/local/include -I$CACHE_DIR/db4/include -I/usr/local/ssl/include"
-
+export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$BUILD_DIR/.python-ldap/db4/lib:/usr/local/ssl/lib"
+export LDFLAGS="-L/usr/local/lib -L$BUILD_DIR/.python-ldap/db4/lib -L/usr/local/ssl/lib"
+export CPPFLAGS="-I/usr/local/include -I$BUILD_DIR/.python-ldap/db4/include -I/usr/local/ssl/include"
 echo $LD_LIBRARY_PATH
 echo $LDFLAGS
 echo $CPPFLAGS
-ls $CACHE_DIR/db4/lib
 
-cd $BUILD_DIR
-if [ ! -d $CACHE_DIR/openldap ]; then
+if [ ! -d $BUILD_DIR/.python-ldap/openldap ]; then
   echo "-----> Fetching and installing openldap"
   curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.33.tgz >/dev/null 2>&1
   echo "-----> Extracting ..."
@@ -76,43 +79,23 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   echo "-----> Change directories ..."
   cd openldap-2.4.33
   echo "-----> Configuring ..."
-  ./configure --enable-bdb --enable-crypt --with-tls=openssl --prefix=$CACHE_DIR/openldap
+  ./configure --enable-bdb --enable-crypt --with-tls=openssl --prefix=$BUILD_DIR/.python-ldap/openldap
   echo "-----> Installing ..."
   make depend
   make
   #make test
   make install
   echo "openldap installed" | indent
+  cd $BUILD_DIR
 fi
 
-export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$CACHE_DIR/openldap/lib:/usr/local/ssl/lib"
-export LDFLAGS="-L/usr/local/lib -L$CACHE_DIR/openldap/lib -L/usr/local/ssl/lib"
-export CPPFLAGS="-I/usr/local/include -I$CACHE_DIR/openldap/include -I/usr/local/ssl/include"
-cd $BUILD_DIR
+export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$BUILD_DIR/.python-ldap//openldap/lib:/usr/local/ssl/lib"
+export LDFLAGS="-L/usr/local/lib -L$BUILD_DIR/.python-ldap/openldap/lib -L/usr/local/ssl/lib"
+export CPPFLAGS="-I/usr/local/include -I$BUILD_DIR/.python-ldap//include -I/usr/local/ssl/include"
 
-# # Install Proj.4
-# if [ ! -d $CACHE_DIR/gdal ]; then
-#   cd $BUILD_DIR
-#   echo "-----> Fetching and installing Proj.4 4.7.0"
-#   curl -O https://s3.amazonaws.com/cirheroku/proj4-4.7.0-heroku.tar.gz >/dev/null 2>&1
-#   echo "-----> Installing ..."
-#   tar xzvf proj4-4.7.0-heroku.tar.gz >/dev/null 2>&1
-#   mv proj4 $CACHE_DIR/proj4
-#   rm proj4-4.7.0-heroku.tar.gz
-#   echo "Proj.4 installed" | indent
-# fi
-
-# # Install GDAL
-# if [ ! -d $CACHE_DIR/gdal ]; then
-#   cd $BUILD_DIR
-#   echo "-----> Fetching and installing GDAL 1.8.1"
-#   curl -O https://s3.amazonaws.com/cirheroku/gdal-1.8.1-heroku.tar.gz >/dev/null 2>&1
-#   echo "-----> Installing ..."
-#   tar xzvf gdal-1.8.1-heroku.tar.gz >/dev/null 2>&1
-#   mv gdal $CACHE_DIR/gdal
-#   rm gdal-1.8.1-heroku.tar.gz
-#   echo "GDAL installed" | indent
-# fi
+##############################################################
+# / python ldap
+##############################################################
 
 # Reject a non-packaged Django app.
 if [ "$NAME" = "Python" ]; then
@@ -158,14 +141,6 @@ set -e
 # Create set-aside .heroku folder.
 mkdir -p .heroku
 
-# Create set-aside .geodjango folder and copy compiled files
-mkdir -p .python-ldap
-cp -R $CACHE_DIR/db4 .python-ldap
-cp -R $CACHE_DIR/groff .python-ldap
-cp -R $CACHE_DIR/openldap .python-ldap
-# cp -R $CACHE_DIR/proj4 .python-ldap
-# cp -R $CACHE_DIR/gdal .python-ldap
-
 # Pylibmc support.
 source $BIN_DIR/steps/pylibmc
 
@@ -201,5 +176,4 @@ set -e
 for dir in $VIRTUALENV_DIRS; do
   rm -rf $CACHE_DIR/$dir
   cp -R $dir $CACHE_DIR/
-
 done
