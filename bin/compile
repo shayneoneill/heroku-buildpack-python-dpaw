@@ -30,6 +30,28 @@ function virtualenv (){
   python "$ROOT_DIR/src/virtualenv-1.7/virtualenv.py" "$@"
 }
 
+# Reject a non-packaged Django app.
+if [ "$NAME" = "Python" ]; then
+  [ -f manage.py ] && [ -f settings.py ] && { echo " !     Django app must be in a package subdirectory"; exit 1; }
+fi
+
+# Warn a checked-in virtualenv.
+if [ -d "lib" ] || [ -d "bin" ]; then
+  echo " !     You have a virtualenv checked in. You should ignore the appropriate paths in your repo. See http://devcenter.heroku.com/articles/gitignore for more info.";
+fi
+
+# Reject a conflicting checked-in virtualenv.
+if [ -f "lib/python2.7" ]; then
+  echo " !     Checked-in virtualenv conflict."
+  exit 1;
+fi
+
+# Copy artifacts out of cache if exists.
+mkdir -p $CACHE_DIR
+for dir in $VIRTUALENV_DIRS; do
+  cp -R $CACHE_DIR/$dir . &> /dev/null || true
+done
+
 ##############################################################
 # python ldap
 ##############################################################
@@ -52,32 +74,9 @@ fi
 echo "-----> Adding soelim to path"
 export PATH=$PATH:$BUILD_DIR/.python-ldap/groff/bin
 
-
 ##############################################################
 # / python ldap
 ##############################################################
-
-# Reject a non-packaged Django app.
-if [ "$NAME" = "Python" ]; then
-  [ -f manage.py ] && [ -f settings.py ] && { echo " !     Django app must be in a package subdirectory"; exit 1; }
-fi
-
-# Warn a checked-in virtualenv.
-if [ -d "lib" ] || [ -d "bin" ]; then
-  echo " !     You have a virtualenv checked in. You should ignore the appropriate paths in your repo. See http://devcenter.heroku.com/articles/gitignore for more info.";
-fi
-
-# Reject a conflicting checked-in virtualenv.
-if [ -f "lib/python2.7" ]; then
-  echo " !     Checked-in virtualenv conflict."
-  exit 1;
-fi
-
-# Copy artifacts out of cache if exists.
-mkdir -p $CACHE_DIR
-for dir in $VIRTUALENV_DIRS; do
-  cp -R $CACHE_DIR/$dir . &> /dev/null || true
-done
 
 # Create virtualenv. Rebuild if corrupt.
 set +e
