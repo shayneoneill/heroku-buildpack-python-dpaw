@@ -40,7 +40,7 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   tar -zxvf db-4.8.30.NC.tar.gz
   cd db-4.8.30.NC
   cd build_unix
-  ../dist/configure --prefix=/usr/local/db4
+  ../dist/configure --prefix=$CACHE_DIR/db4
   make
   make install
   echo "-----> Fetching and installing openldap"
