@@ -43,7 +43,12 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   ../dist/configure --prefix=$CACHE_DIR/db4
   make
   make install
-  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CACHE_DIR/db4
+
+  echo "-----> Changing library paths"
+  LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$CACHE_DIR/db4/BerkeleyDB.4.2/lib:/usr/local/ssl/lib"
+  LDFLAGS="-L/usr/local/lib -L$CACHE_DIR/db4/BerkeleyDB.4.2/lib -L/usr/local/ssl/lib"
+  CPPFLAGS="-I/usr/local/include -I$CACHE_DIR/db4/BerkeleyDB.4.2/include -I/usr/local/ssl/include"
+  ls $CACHE_DIR/db4
 
   echo "-----> Fetching and installing openldap"
   curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.9.tgz >/dev/null 2>&1
@@ -55,7 +60,7 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   echo "-----> Change directories ..."
   cd $CACHE_DIR/openldap
   echo "-----> Configuring ..."
-  ./configure --with-tls=openssl
+  ./configure --enable-bdb --enable-crypt --with-tls=openssl
   echo "-----> Installing ..."
   make depend
   make
