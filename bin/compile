@@ -30,10 +30,6 @@ function virtualenv (){
   python "$ROOT_DIR/src/virtualenv-1.7/virtualenv.py" "$@"
 }
 
-rm -rf $CACHE_DIR/groff
-rm -rf $CACHE_DIR/db4
-rm -rf $CACHE_DIR/openldap
-
 # Install python-ldap
 if [ ! -d $CACHE_DIR/groff ]; then
   cd $BUILD_DIR
