@@ -42,7 +42,10 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   cd groff-1.21
   ./configure --prefix=/usr/local &&
   make PROCESSEDEXAMPLEFILES="" &&
-  make PROCESSEDEXAMPLEFILES="" install &&
+  make PROCESSEDEXAMPLEFILES="" install
+
+  which soelim
+  exit
 
   echo "-----> Installing BerkeleyDB"
   cd $BUILD_DIR
