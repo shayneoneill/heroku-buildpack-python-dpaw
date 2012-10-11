@@ -30,28 +30,6 @@ function virtualenv (){
   python "$ROOT_DIR/src/virtualenv-1.7/virtualenv.py" "$@"
 }
 
-# Reject a non-packaged Django app.
-if [ "$NAME" = "Python" ]; then
-  [ -f manage.py ] && [ -f settings.py ] && { echo " !     Django app must be in a package subdirectory"; exit 1; }
-fi
-
-# Warn a checked-in virtualenv.
-if [ -d "lib" ] || [ -d "bin" ]; then
-  echo " !     You have a virtualenv checked in. You should ignore the appropriate paths in your repo. See http://devcenter.heroku.com/articles/gitignore for more info.";
-fi
-
-# Reject a conflicting checked-in virtualenv.
-if [ -f "lib/python2.7" ]; then
-  echo " !     Checked-in virtualenv conflict."
-  exit 1;
-fi
-
-# Copy artifacts out of cache if exists.
-mkdir -p $CACHE_DIR
-for dir in $VIRTUALENV_DIRS; do
-  cp -R $CACHE_DIR/$dir . &> /dev/null || true
-done
-
 ##############################################################
 # python ldap
 ##############################################################
@@ -78,9 +56,72 @@ fi
 echo "-----> Adding soelim to path"
 export PATH=$PATH:$BUILD_DIR/.python-ldap/groff/bin
 
+echo "-----> Installing BerkeleyDB"
+curl -O http://download.oracle.com/berkeley-db/db-4.8.24.NC.tar.gz
+tar -zxvf db-4.8.24.NC.tar.gz
+cd db-4.8.24.NC
+cd build_unix
+../dist/configure --prefix=$BUILD_DIR/.python-ldap/db4
+make
+make install
+cd $BUILD_DIR
+
+echo "-----> Changing library paths"
+export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$BUILD_DIR/.python-ldap/db4/lib:/usr/local/ssl/lib"
+export LDFLAGS="-L/usr/local/lib -L$BUILD_DIR/.python-ldap/db4/lib -L/usr/local/ssl/lib"
+export CPPFLAGS="-I/usr/local/include -I$BUILD_DIR/.python-ldap/db4/include -I/usr/local/ssl/include"
+echo $LD_LIBRARY_PATH
+echo $LDFLAGS
+echo $CPPFLAGS
+
+if [ ! -d $BUILD_DIR/.python-ldap/openldap ]; then
+  echo "-----> Fetching and installing openldap"
+  curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.33.tgz >/dev/null 2>&1
+  echo "-----> Extracting ..."
+  tar -xvf openldap-2.4.33.tgz
+  echo "-----> Moving ..."
+  echo "-----> Change directories ..."
+  cd openldap-2.4.33
+  echo "-----> Configuring ..."
+  ./configure --enable-bdb --enable-crypt --with-tls=openssl --prefix=$BUILD_DIR/.python-ldap/openldap
+  echo "-----> Installing ..."
+  make depend
+  make
+  #make test
+  make install
+  echo "openldap installed" | indent
+  cd $BUILD_DIR
+fi
+
+export LD_LIBRARY_PATH="/usr/lib:/usr/local/lib:$BUILD_DIR/.python-ldap//openldap/lib:/usr/local/ssl/lib"
+export LDFLAGS="-L/usr/local/lib -L$BUILD_DIR/.python-ldap/openldap/lib -L/usr/local/ssl/lib"
+export CPPFLAGS="-I/usr/local/include -I$BUILD_DIR/.python-ldap//include -I/usr/local/ssl/include"
+
 ##############################################################
 # / python ldap
 ##############################################################
+
+# Reject a non-packaged Django app.
+if [ "$NAME" = "Python" ]; then
+  [ -f manage.py ] && [ -f settings.py ] && { echo " !     Django app must be in a package subdirectory"; exit 1; }
+fi
+
+# Warn a checked-in virtualenv.
+if [ -d "lib" ] || [ -d "bin" ]; then
+  echo " !     You have a virtualenv checked in. You should ignore the appropriate paths in your repo. See http://devcenter.heroku.com/articles/gitignore for more info.";
+fi
+
+# Reject a conflicting checked-in virtualenv.
+if [ -f "lib/python2.7" ]; then
+  echo " !     Checked-in virtualenv conflict."
+  exit 1;
+fi
+
+# Copy artifacts out of cache if exists.
+mkdir -p $CACHE_DIR
+for dir in $VIRTUALENV_DIRS; do
+  cp -R $CACHE_DIR/$dir . &> /dev/null || true
+done
 
 # Create virtualenv. Rebuild if corrupt.
 set +e
