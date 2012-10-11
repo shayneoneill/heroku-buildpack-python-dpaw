@@ -74,17 +74,16 @@ if [ ! -d $CACHE_DIR/openldap ]; then
   echo "-----> Extracting ..."
   tar -xvf openldap-2.4.33.tgz
   echo "-----> Moving ..."
-  mv openldap-2.4.33 $CACHE_DIR/openldap
-  rm openldap-2.4.33.tgz
   echo "-----> Change directories ..."
-  cd $CACHE_DIR/openldap
+  cd openldap-2.4.33
   echo "-----> Configuring ..."
-  ./configure --enable-bdb --enable-crypt --with-tls=openssl
+  ./configure --enable-bdb --enable-crypt --with-tls=openssl --prefix=$CACHE_DIR/openldap
   echo "-----> Installing ..."
   make depend
   make
   #make test
   make install
+  rm openldap-2.4.33.tgz
   echo "openldap installed" | indent
 fi
 
