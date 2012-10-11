@@ -33,8 +33,18 @@ function virtualenv (){
 cd $BUILD_DIR
 
 # Install python-ldap
-if [ ! -d $CACHE_DIR/gdal ]; then
-  apt-get install python-ldap
+if [ ! -d $CACHE_DIR/openldap ]; then
+  cd $BUILD_DIR
+  echo "-----> Fetching and installing openldap"
+  curl -O http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.9.tgz >/dev/null 2>&1
+  echo "-----> Installing ..."
+  tar -xzvf openldap-2.4.9.gz >/dev/null 2>&1
+  mv openldap-2.4.9 $CACHE_DIR/openldap
+  rm openldap-2.4.9.tar.gz
+  cd $CACHE_DIR/openldap
+  ./configure
+  make && make install
+  echo "openldap installed" | indent
 fi
 
 # # Install Proj.4
