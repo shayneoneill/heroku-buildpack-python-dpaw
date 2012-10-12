@@ -172,6 +172,7 @@ pip install --use-mirrors -r requirements.txt --src ./.heroku/src | indent
 
 pip install -U --no-install python-ldap
 cd build/python-ldap
+cat setup.cfg
 sed "s/library_dirs = \(.*\)/library_dirs = $BUILD_DIR\/.python-ldap\/openldap\/lib \1/g" setup.cfg > setup.cfg
 sed "s/include_dirs = \(.*\)/include_dirs = $BUILD_DIR\/.python-ldap\/openldap\/include \1/g" setup.cfg > setup.cfg
 cat setup.cfg
