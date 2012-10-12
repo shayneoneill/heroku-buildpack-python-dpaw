@@ -32,6 +32,7 @@ function virtualenv (){
 
 ##############################################################
 # python ldap
+# http://bengillies.tiddlyspace.com/bags/bengillies_public/tiddlers/Python-LDAP%20and%20Oracle%20Enterprise%20Linux
 ##############################################################
 
 cd $BUILD_DIR
@@ -165,7 +166,16 @@ export CPPFLAGS="-I/usr/local/include -I$BUILD_DIR/.python-ldap/openldap/include
 
 # Install dependencies.
 echo "-----> Installing dependencies using pip version $(pip --version | awk '{print $2}')"
-pip install --use-mirrors -r requirements.txt --src ./.heroku/src | indent
+pip install --use-mirrors -r requirements.txt --src ./.heroku/src -I usr/local | indent
+
+#####
+
+pip install -U --no-install python-ldap
+cd build/python-ldap
+cat setup.cfg
+cd ..
+
+######
 
 # Django support.
 if [ "$NAME" = "Python/Django" ] && ! [ "$DISABLE_INJECTION" ]; then
