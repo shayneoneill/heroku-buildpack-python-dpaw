@@ -43,7 +43,7 @@ fi
 mkdir -p .python-ldap
 mkdir -p $CACHE_DIR/.python-ldap
 
-apt-get install python-dev libldap2-dev libsasl2-dev libssl-dev
+#apt-get install python-dev libldap2-dev libsasl2-dev libssl-dev
 
 
 # Install python-ldap
@@ -53,8 +53,8 @@ if [ ! -d $BUILD_DIR/.python-ldap/groff ]; then
   tar -zxvf groff-1.21.tar.gz
   cd groff-1.21
   ./configure --prefix=$BUILD_DIR/.python-ldap/groff
-  #make PROCESSEDEXAMPLEFILES=""
-  #make PROCESSEDEXAMPLEFILES="" install
+  make PROCESSEDEXAMPLEFILES=""
+  make PROCESSEDEXAMPLEFILES="" install
   cd $BUILD_DIR
   cp -R .python-ldap/groff $CACHE_DIR/.python-ldap
 fi
@@ -69,8 +69,8 @@ if [ ! -d $BUILD_DIR/.python-ldap/db4 ]; then
   cd db-4.8.24.NC
   cd build_unix
   ../dist/configure --prefix=$BUILD_DIR/.python-ldap/db4
-  #make
-  #make install
+  make
+  make install
   cd $BUILD_DIR
   cp -R .python-ldap/db4 $CACHE_DIR/.python-ldap
 fi
@@ -94,11 +94,11 @@ if [ ! -d $BUILD_DIR/.python-ldap/openldap ]; then
   echo "-----> Configuring ..."
   #./configure --enable-bdb --enable-crypt --with-tls=openssl --prefix=$BUILD_DIR/.python-ldap/openldap
   echo "-----> Installing ..."
-  #make depend
-  #make
+  make depend
+  make
   #make test
-  #make install
-  apt-get install libldap2-dev
+  make install
+  #apt-get install libldap2-dev
   echo "openldap installed" | indent
   cd $BUILD_DIR
   cp -R .python-ldap/openldap $CACHE_DIR/.python-ldap
